@@ -1,0 +1,107 @@
+#!/usr/bin/env perl
+
+use strict;
+use lib qw(../lib);
+
+use Getopt::Long;
+use Pod::Usage;
+
+use RPM::Util::Files;
+
+my %config = (
+    build_root => ''
+);
+
+pod2usage(2) unless (@ARGV);
+
+GetOptions(
+    'package_name=s' => \$config{package_name},
+    'build_root=s' => \$config{build_root},
+    'defattr=s' => \$config{defattr},
+    'use_attr' => \$config{use_attr},
+    'docdirs=s@' => \$config{docdirs},
+    'ignore_filters=s@' => \$config{ignore_filters},
+    'docs_filters=s@' => \$config{docs_filters},
+    'config_filters=s@' => \$config{config_filters},
+    'version' => sub { print $RPM::Util::Files::VERSION . "\n"; },
+    'help' => sub { pod2usage(1) }
+) or pod2usage(2);
+
+pod2usage(2) unless ($config{build_root});
+
+delete $config{$_} foreach (grep {!defined $config{$_}} keys %config);
+
+if (exists $config{defattr}) {
+    $config{defattr} = [
+        map { ($_ eq '-') ? undef : $_ }
+        split(/,/ => $config{defattr})
+    ];
+}
+
+my @entry_type_list = qw/ignore docs config/;
+my %filters = ();
+
+$filters{$_ . "_filters"} = [] foreach (@entry_type_list);
+
+foreach my $entry_type (@entry_type_list) {
+    my $filter_name = "${entry_type}_filters";
+
+    if (exists $config{$filter_name} && ref $config{$filter_name} eq "ARRAY") {
+        foreach my $regex (@{$config{$filter_name}}) {
+            push(@{$filters{$filter_name}}, sub {
+              my ($entry, $path) = @_;
+              
+              return $path =~ m/${regex}/;
+            });
+        }
+    }
+}
+
+$config{$_} = $filters{$_} foreach (keys %filters);
+
+my $util = RPM::Util::Files->new(\%config);
+
+$util->make_files;
+print $util->to_string;
+
+__END__
+
+=head1 NAME
+
+rpm-files-maker - create %files list for rpm specfile
+
+=head1 SYNOPSIS
+
+rpm-files-maker [options]
+
+Options:
+
+  --package_name      Subpackage name. default none.
+  --build_root        Build root directory. (required)
+  --defattr           %defattr parameter. default "644,root,root,-"
+  --use_attr          Using %attr parameter each %files list entry. default false.
+  --docdirs           %docdir list. default none.
+  --ignore_filters    Ignore regex filters.
+  --docs_filters      regex filters for %docs.
+  --config_filters    regex filters for %config.
+  --version           Show version.
+  --help              Show this message.
+
+Example:
+
+  rpm-files-maker \
+    --build_root=/var/tmp/some-package-version-root \
+    --package_name="-n mod_typo" \
+    --defattr="777,root,root,-" \
+    --use_attr \
+    --force_root \
+    --docdir="/usr/local/some-package-version/manuals" \
+    --docdir="/usr/local/some-package-version/docs" \
+    --config_filters="\\.conf$" --config_filters="rc$" \
+
+=head1 DESCRIPTION
+
+This command is utility to print %files list of rpm specfile.
+
+=cut
+

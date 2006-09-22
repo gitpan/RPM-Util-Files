@@ -1,0 +1,33 @@
+---
+name: RPM-Util-Files
+version: !!perl/hash:Module::Build::Version
+  original: 0.10
+  version:
+    - 0
+    - 100
+author:
+  - 'Toru Yamaguchi <zigorou@cpan.org>'
+abstract: Generate %files list in RPM Specfile
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+build_requires:
+  Class::Accessor::Fast: 0
+  File::Find::Object: 0
+  File::Spec: 0
+  File::stat: 0
+  Getopt::Long: 0
+  Merge::HashRef: 0
+  Pod::Usage: 0
+  Test::More: 0
+provides:
+  RPM::Util::Files:
+    file: lib/RPM/Util/Files.pm
+    version: 0.10
+  RPM::Util::Files::Entry:
+    file: lib/RPM/Util/Files/Entry.pm
+    version: 0.10
+generated_by: Module::Build version 0.2804
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2

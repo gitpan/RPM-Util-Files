@@ -1,0 +1,37 @@
+RPM-Util-Files
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+    perl Build.PL
+    ./Build
+    ./Build test
+    ./Build install
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the perldoc command.
+
+    perldoc RPM::Util::Files::Entry
+
+You can also look for information at:
+
+    Search CPAN
+        http://search.cpan.org/dist/RPM-Util-Files
+
+    CPAN Request Tracker:
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=RPM-Util-Files
+
+    AnnoCPAN, annotated CPAN documentation:
+        http://annocpan.org/dist/RPM-Util-Files
+
+    CPAN Ratings:
+        http://cpanratings.perl.org/d/RPM-Util-Files
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2006 Toru Yamaguchi
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.

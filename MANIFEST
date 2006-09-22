@@ -1,0 +1,12 @@
+bin/rpm-files-maker
+Build.PL
+Changes
+lib/RPM/Util/Files.pm
+lib/RPM/Util/Files/Entry.pm
+MANIFEST			This list of files
+META.yml
+README
+t/00-load.t
+t/boilerplate.t
+t/pod-coverage.t
+t/pod.t
